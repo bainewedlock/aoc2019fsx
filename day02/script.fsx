@@ -37,7 +37,7 @@ run demoprogram
 
 let fixState p = { p with Code = p.Code.Add(1, 12).Add(2, 2) }
 
-File.ReadAllText "input.txt"
+File.ReadAllText "day02/input.txt"
 |> parse
 |> fixState
 |> run
