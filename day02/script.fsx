@@ -35,10 +35,26 @@ let rec run (p:Program) =
     | x         -> failwithf "unexpected %A" x
 run demoprogram
 
-let fixState p = { p with Code = p.Code.Add(1, 12).Add(2, 2) }
+let nounAddress = 1
+let verbAddress = 2
 
-File.ReadAllText "day02/input.txt"
-|> parse
-|> fixState
-|> run
-|> fun p -> p.Code.[0]
+let fixState noun verb p =
+    { p with Code = p.Code.Add(nounAddress, noun).Add(verbAddress, verb) }
+
+let input = File.ReadAllText "day02/input.txt"
+let output p = p.Code.[0]
+
+let solvePart1 = parse >> fixState 12 2 >> run >> output >> sprintf "part1: %d"
+solvePart1 input 
+
+let runVariant (noun, verb) =
+    parse input
+    |> fixState noun verb
+    |> run
+    |> output
+
+let solvePart2 input =
+    [ for noun in [0..99] do for verb in [0..99] do yield noun, verb ]
+    |> List.find (runVariant >> ((=)19690720))
+    |> fun (a, b) -> sprintf "part2: 100*%d+%d=%d" a b (100*a+b)
+solvePart2 input
