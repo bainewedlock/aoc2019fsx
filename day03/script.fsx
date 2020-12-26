@@ -39,8 +39,7 @@ let calcTrail cmds =
         let p' = e' |> List.last
         (p', e')) ((0,0), [])
     |> List.collect snd
-    |> Set
-demowire |> List.map calcTrail
+let demotrails = demowire |> List.map calcTrail
 
 let toTuple = function
     | [a;b] -> a,b
@@ -49,16 +48,42 @@ let toTuple = function
 let manhattanDistance (x,y) = abs x + abs y
 manhattanDistance (-1,5)
 
+let intersections t1 t2 = Set.intersect (Set t1) (Set t2)
+
 let solvePart1 input =
     let t1,t2 = parse input |> List.map calcTrail |> toTuple
-    Set.intersect t1 t2
+    intersections t1 t2
     |> Seq.map manhattanDistance
     |> Seq.min
 solvePart1 demoinput
 
 solvePart1 "R75,D30,R83,U83,L12,D49,R71,U7,L72
             U62,R66,U55,R34,D71,R55,D58,R83"
+
 solvePart1 "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
             U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
+
 let input = File.ReadAllText "day03/input.txt"
 solvePart1 input
+
+let distanceToPos pos trail =
+    trail
+    |> List.indexed
+    |> Seq.pick (fun (i,x) -> if pos=x then Some (i+1) else None)
+distanceToPos (3,3) demotrails.[0]
+
+let solvePart2 input =
+    let t1,t2 = parse input |> List.map calcTrail |> toTuple
+    intersections t1 t2
+    |> Seq.map (fun p ->
+        distanceToPos p t1 + distanceToPos p t2)
+    |> Seq.min
+solvePart2 demoinput
+
+solvePart2 "R75,D30,R83,U83,L12,D49,R71,U7,L72
+            U62,R66,U55,R34,D71,R55,D58,R83"
+
+solvePart2 "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
+            U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
+
+solvePart2 input
