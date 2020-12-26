@@ -1,7 +1,6 @@
 open System.IO
 open System.Text.RegularExpressions
 
-
 let adjacentTwins (x:string) = Regex.IsMatch(x, @"(.)\1")
 adjacentTwins "123345"
 
@@ -37,4 +36,5 @@ let solve2 =
     parse
     >> Seq.filter (string >> fun x -> adjacentTwins2 x && neverDecrease x) 
     >> Seq.length
+"493 is too low"
 solve2 input
